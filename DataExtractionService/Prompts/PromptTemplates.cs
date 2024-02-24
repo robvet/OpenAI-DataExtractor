@@ -6,20 +6,26 @@
         /// Prompt template for for extracting keyword search from user question to be used 
         /// against the search engine to build retriever.
         /// </summary>
+
         public const string SystemPromptTemplate = """
             Task: Extract key financial data from the provided document, which may be a balance sheet or an income statement.
-
-            1. Identify the type of financial document: Is it a balance sheet or an income statement?
-            2. Based on the document type, extract the following key information:
-               - If it's a balance sheet, identify and list the total assets, total liabilities, and shareholder's equity.
-               - If it's an income statement, identify and list the total revenue, gross profit, operating expenses, and net income.
-            3. Format the extracted data clearly. For example:
-               - "Total Assets: [amount]"
-               - "Total Revenue: [amount]"
-            4. Highlight any unusual items or discrepancies in the financial data that might require further attention.
-            5. If the document is part of a series (e.g., quarterly reports), compare the extracted data with previous periods to identify significant trends or changes.
-            6. Summarize the overall financial health indicated by the document, based on the extracted data.
+            Only extract those fields that present in the document.
+            Do not generate any other text whatsoever except for the extracted data. Again, no other narrative text or explanation should be generated. 
             """;
+        //public const string SystemPromptTemplate = """
+        //    Task: Extract key financial data from the provided document, which may be a balance sheet or an income statement.
+
+        //    1. Identify the type of financial document: Is it a balance sheet or an income statement?
+        //    2. Based on the document type, extract the following key information:
+        //       - If it's a balance sheet, identify and list the total assets, total liabilities, and shareholder's equity.
+        //       - If it's an income statement, identify and list the total revenue, gross profit, operating expenses, and net income.
+        //    3. Format the extracted data clearly. For example:
+        //       - "Total Assets: [amount]"
+        //       - "Total Revenue: [amount]"
+        //    4. Highlight any unusual items or discrepancies in the financial data that might require further attention.
+        //    5. If the document is part of a series (e.g., quarterly reports), compare the extracted data with previous periods to identify significant trends or changes.
+        //    6. Summarize the overall financial health indicated by the document, based on the extracted data.
+        //    """;
 
         /// <summary>
         /// Prompt template for for extracting keyword search from user question to be used 

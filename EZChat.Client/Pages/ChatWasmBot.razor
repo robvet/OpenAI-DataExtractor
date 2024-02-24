@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/chat"
 
 @* @rendermode InteractiveAuto *@
 @rendermode @(new InteractiveAutoRenderMode(prerender: false))
@@ -20,7 +20,7 @@
 @* @inject Contracts.IChatCompletion ChatCompletion *@
 @inject IJSRuntime _jsRuntime
 
-<PageTitle>FullChat</PageTitle>
+<PageTitle>Chat Completion API</PageTitle>
 
 <style>
     textarea {
@@ -174,7 +174,7 @@
     <!-- Header and Token Count -->
     <div style="display: flex; justify-content: space-between;align-items: center;">
         <div id="name">
-            <h1>FullChat</h1>
+            <h1>Chat Completion API</h1>
         </div>
         @if (chatMessages.Count > 1)
         {
@@ -216,7 +216,7 @@
                         @foreach (var suggestion in suggestions)
                         {
                             <div style="background-color: #d6d6d6; border: 1px solid black; border-radius: 10px; padding: 10px; margin: 5px;text-align: center;">
-                                <a href="#" @onclick:preventDefault="true" @onclick="() => AssignToPromptTextArea(suggestion)" style="font-family: arial !important; font-size: 0.9em !important;">@suggestion</a>
+                                <a href="/chat" @onclick:preventDefault="true" @onclick="() => AssignToPromptTextArea(suggestion)" style="font-family: arial !important; font-size: 0.9em !important;">@suggestion</a>
                             </div>
                         }
                     </div>
@@ -228,10 +228,8 @@
     @if (Processing)
     {
         <br>
-
-        <div style="display: flex; align-items: center;">
-            <h1>Processing</h1>
-            <div class="spinner-border text-danger" style="margin-left:20px;"></div>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <img src="images/processing.gif" alt="Processing..." />
         </div>
     }
 

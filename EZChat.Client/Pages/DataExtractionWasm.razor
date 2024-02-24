@@ -1,4 +1,4 @@
-﻿@page "/extract"
+﻿@page "/"
 @inject HttpClient client
 @* @rendermode InteractiveWebAssembly *@
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
@@ -186,7 +186,7 @@
         }
     </div>
 
-    <div>
+    @* <div>
         <div class="toast fade show w-100 rounded-3" style="margin-bottom: 25px;">
             <div class="toast fade show w-100 rounded-3">
                 <div class="toast-header @("bg-red text-white")">
@@ -206,11 +206,49 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 
     <!-- File Upload UX -->
     <div>
-        <div class="toast fade show w-100 rounded-3" style="margin-bottom: 25px;">   
+
+
+        <div id="upload" class="toast fade show w-100 rounded-3" style="margin-bottom: 25px;">
+            <div class="toast-header @("bg-black text-white")" style="margin-bottom: 10px;">
+                <i class="bi @("bi-file-earmark-arrow-up") me-1" aria-hidden="true"></i>
+                <strong class="me-auto text-capitalize">
+                    File Upload Information
+                </strong>
+            </div>
+            <div>
+                <EditForm Model="@Ticket" method="post" OnValidSubmit="@OnSubmit" enctype="multipart/form-data">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <!-- Comment out 'multiple' directive to limit to a single file -->
+                    @* <InputFile class="form-control mb-4" multiple OnChange="@OnInputFileChange" style="background-color: #d6d6d6; border: 1px solid black; border-radius: 10px; padding: 20px; width: calc(100% - 40px); margin: auto;" /> *@
+                    <InputFile class="form-control mb-4" OnChange="@OnInputFileChange" style="background-color: #d6d6d6; border: 1px solid black; border-radius: 10px; padding: 20px; width: calc(100% - 40px); margin: auto;" />
+                </EditForm>
+
+            </div>
+            @if (selectedFileNames.Count > 0)
+            {
+                <div class="form-control mb-4 d-flex flex-row" style="background-color: #d6d6d6; border: 1px solid black; border-radius: 10px; padding: 20px; width: calc(100% - 40px); margin: auto;">
+                    <span style="display: flex; flex-direction: row; flex-wrap: wrap;">
+                        @foreach (var fileName in selectedFileNames)
+                        {
+                            <p class="me-3">@fileName</p>
+                        }
+                    </span>
+                </div>
+            }
+        </div>
+
+
+
+
+
+
+
+        @* <div class="toast fade show w-100 rounded-3" style="margin-bottom: 25px;">   
             <div class="toast-header @("bg-black text-white")" style="margin-bottom: 10px;">
                 <i class="bi @("bi-lightbulb") me-1" aria-hidden="true"></i>
                 <strong class="me-auto text-capitalize">
@@ -222,27 +260,28 @@
                     <DataAnnotationsValidator />
                     <ValidationSummary />
                     <InputText class="form-control mb-4" placeholder="Title" @bind-Value="@Ticket.Title" style="background-color: #d6d6d6; border: 1px solid black; border-radius: 10px; padding: 20px; width: calc(100% - 40px); margin: auto; height:15px;" />
-                    @* <InputText class="form-control mb-4" placeholder="Description" @bind-Value="@Ticket.Description" /> *@
                     <InputFile class="form-control mb-4" multiple OnChange="@OnInputFileChange" style="background-color: #d6d6d6; border: 1px solid black; border-radius: 10px; padding: 20px; width: calc(100% - 40px); margin: auto;" />
-                    @* <button class="btn btn-primary" type="submit">Submit</button> *@
                 </EditForm>
-            </div>
-        </div>
+             </div>
+        </div> *@
+     
+    
      </div>
    
 
     @if (Processing)
     {
         <br>
-
-        <div style="display: flex; align-items: center;">
-            <h1>Processing</h1>
-            <div class="spinner-border text-danger" style="margin-left:20px;"></div>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <img src="images/processing.gif" alt="Processing..." />
         </div>
+
+        
     }
 
     <!-- ChatTurns -->
     <div id="chatcontainer" style="height:70vh; overflow: auto;">
+        <!-- New Code ChatTurn Code -->
         <!-- New Code ChatTurn Code -->
         <div class="toast-container position-static w-100 d-flex flex-column align-items-stretch;" style="margin-bottom: 30px;">
 
@@ -318,7 +357,10 @@
     private string ErrorMessage = "";
     private string prompt = """I have uploaded a balance sheet text document. Please extract the following information: 1. Total Assets value 2. Total Liabilities value. The values of Total Assets and Total Liabilities are needed for financial analysis.Please ensure accuracy in identifying and reporting these figures.""";
    
-   string[] suggestions;
+    string[] suggestions;
+
+
+    private List<string> selectedFileNames = new List<string>();
 
    protected override void OnInitialized()
    {
@@ -331,6 +373,10 @@
 
     private void OnInputFileChange(InputFileChangeEventArgs e)
     {
+        
+        // selectedFileNames = e.GetMultipleFiles().Select(file => file.Name).ToList();
+        
+        var singleFile = e.File;
         Ticket.Attachments = e.GetMultipleFiles().ToList();
     }
 
@@ -363,12 +409,6 @@
         if (string.IsNullOrEmpty(prompt))
         {
             ErrorMessage = "Please ask me something!";
-            return;
-        }
-
-        if (string.IsNullOrEmpty(Ticket.Title))
-        {
-            ErrorMessage = "Please add a Title!";
             return;
         }
 
@@ -449,7 +489,7 @@
         finally
         {
             // Clear the prompt variable
-            prompt = "";
+            //prompt = "";
 
             // Set Processing to false to indicate
             // that the method is done processing
@@ -476,7 +516,7 @@
 
 
 
-@*             // Code Junkyard
+@*              // Code Junkyard
             // List<IBrowserFile> files = Ticket.Attachments;
 
             // await _uploadService.UploadDocumentsAsync(files);
@@ -523,4 +563,5 @@
             // // Message = response.IsSuccessStatusCode ? "Upload successful!" : response.ReasonPhrase;
 
             // // Ticket = new();  *@
+
 
